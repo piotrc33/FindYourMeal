@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "blank-ts",
-    "slug": "blank-ts",
+    "name": "FindYourMeal",
+    "slug": "FindYourMeal",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

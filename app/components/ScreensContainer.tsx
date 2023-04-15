@@ -24,7 +24,7 @@ export default function ScreensContainer() {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName: "search" | "heart";
-            let routeName = route.name;
+            const routeName = route.name;
 
             if (routeName === findName) {
               iconName = "search";

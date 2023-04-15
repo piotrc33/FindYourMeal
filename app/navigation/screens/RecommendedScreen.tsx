@@ -1,6 +1,6 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, Text, View, TextInput, Keyboard } from "react-native";
 import { RootStackParamList } from "../../types/types";
 
 type RecommendedScreenProps = {
@@ -9,7 +9,13 @@ type RecommendedScreenProps = {
 
 export default function RecommendedScreen(props: RecommendedScreenProps) {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} 
+           >
+
+      <View style={styles.searchModal}>
+        <TextInput style={styles.searchInput} placeholder="Search" />
+      </View>
+
       <Text>Recommended Screen</Text>
 
       <Button
@@ -34,5 +40,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  searchModal: {
+    width: "100%",
+    position: "absolute",
+    textAlign: "center",
+    top: 60,
+    display: "flex",
+    alignItems: "center"
+  },
+  searchInput: {
+    width: "90%",
+    backgroundColor: "#EFEDED",
+    color: "black",
+    borderRadius: 8,
+    padding: 10,
   },
 });
