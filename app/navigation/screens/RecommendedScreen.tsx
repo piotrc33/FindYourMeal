@@ -1,7 +1,10 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View, TextInput, Keyboard } from "react-native";
+import { Button, StyleSheet, Text, View, TextInput } from "react-native";
 import { RootStackParamList } from "../../types/types";
+import Search from "../../components/Search";
+import Divider from "../../components/Divider";
+import Card from "../../components/Card";
 
 type RecommendedScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Recommended">;
@@ -9,20 +12,18 @@ type RecommendedScreenProps = {
 
 export default function RecommendedScreen(props: RecommendedScreenProps) {
   return (
-    <View style={styles.container} 
-           >
+    <View style={styles.container}>
+      <Search />
 
-      <View style={styles.searchModal}>
-        <TextInput style={styles.searchInput} placeholder="Search" />
-      </View>
+      <Divider text="Recommended" />
 
-      <Text>Recommended Screen</Text>
+      <Card onPress={() => props.navigation.push("Recipe")} />
 
       <Button
         title="go to Search"
         onPress={() => props.navigation.push("Search")}
       />
-      <View style={{ marginTop: 20 }}>
+      <View style={{ marginTop: 20, marginBottom: "auto" }}>
         <Button
           title="go to recipe"
           onPress={() => props.navigation.push("Recipe")}
@@ -40,20 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-  },
-  searchModal: {
-    width: "100%",
-    position: "absolute",
-    textAlign: "center",
-    top: 60,
-    display: "flex",
-    alignItems: "center"
-  },
-  searchInput: {
-    width: "90%",
-    backgroundColor: "#EFEDED",
-    color: "black",
-    borderRadius: 8,
-    padding: 10,
+    flexDirection: "column",
   },
 });
