@@ -1,37 +1,53 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  Keyboard,
+  Pressable,
+} from "react-native";
 import { RootStackParamList } from "../../types/types";
 import Search from "../../components/Search";
 import Divider from "../../components/Divider";
 import Card from "../../components/Card";
+import { useState } from "react";
 
 type RecommendedScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Recommended">;
 };
 
 export default function RecommendedScreen(props: RecommendedScreenProps) {
+  const [showFilters, setShowFilters] = useState(false);
+
+  const changeView = () => {
+    setShowFilters(!showFilters);
+  };
+
   return (
-    <View style={styles.container}>
-      <Search />
+    <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+      <Search onPress={changeView} />
 
-      <Divider text="Recommended" />
+      {showFilters ? (
+        <View>
+          <Text>Filter</Text>
+          <Button title="SEARCH" onPress={() => setShowFilters(false)} />
+          <StatusBar style="auto" />
+        </View>
+      ) : (
+        <View>
+          <Divider text="Recommended" />
 
-      <Card onPress={() => props.navigation.push("Recipe")} />
+          {/* TODO: flatlist of cards */}
+          <Card onPress={() => props.navigation.push("Recipe")} />
+          <Divider text="Test" />
+          <Button title="test" onPress={changeView}></Button>
 
-      <Button
-        title="go to Search"
-        onPress={() => props.navigation.push("Search")}
-      />
-      <View style={{ marginTop: 20, marginBottom: "auto" }}>
-        <Button
-          title="go to recipe"
-          onPress={() => props.navigation.push("Recipe")}
-        />
-      </View>
-
-      <StatusBar style="auto" />
-    </View>
+          <StatusBar style="auto" />
+        </View>
+      )}
+    </Pressable>
   );
 }
 
@@ -40,7 +56,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
     flexDirection: "column",
+    width: '100%'
   },
 });

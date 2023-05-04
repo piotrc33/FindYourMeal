@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Dimensions } from "react-native";
 import { lightBlack, subtleGray } from "../../constants/Colors";
 
 interface DividerProps {
@@ -18,8 +18,7 @@ export default Divider;
 
 const styles = StyleSheet.create({
   divider: {
-    width: "100%",
-    alignSelf: "flex-start",
+    alignSelf: "stretch",
     borderBottomColor: lightBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 20,
