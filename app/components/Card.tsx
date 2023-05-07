@@ -5,7 +5,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/types";
 
 interface CardProps {
-  // navigation: StackNavigationProp<RootStackParamList, "Recommended">;
   onPress: () => void
 }
 

@@ -13,6 +13,7 @@ import Search from "../../components/Search";
 import Divider from "../../components/Divider";
 import Card from "../../components/Card";
 import { useState } from "react";
+import Filters from "../../components/Filters";
 
 type RecommendedScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Recommended">;
@@ -30,19 +31,15 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
       <Search onPress={changeView} />
 
       {showFilters ? (
-        <View>
-          <Text>Filter</Text>
-          <Button title="SEARCH" onPress={() => setShowFilters(false)} />
-          <StatusBar style="auto" />
-        </View>
+        <Filters onSearch={changeView}/>
       ) : (
         <View>
           <Divider text="Recommended" />
 
           {/* TODO: flatlist of cards */}
           <Card onPress={() => props.navigation.push("Recipe")} />
-          <Divider text="Test" />
-          <Button title="test" onPress={changeView}></Button>
+          {/* <Divider text="Test" />
+          <Button title="test" onPress={changeView}></Button> */}
 
           <StatusBar style="auto" />
         </View>

@@ -4,6 +4,11 @@ import { StyleSheet, Text, View } from "react-native";
 export default function RecipeScreen() {
   return (
     <View style={styles.container}>
+      {/* Image */}
+      {/* Description */}
+      {/* Ingredients */}
+      {/* Nutritional Values */}
+      {/* Instructions */}
       <Text>Recipe Screen</Text>
       <StatusBar style="auto" />
     </View>
