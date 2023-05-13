@@ -1,6 +1,6 @@
 import React from "react";
-import { StyleSheet, View, Text, Dimensions } from "react-native";
-import { lightBlack, subtleGray } from "../../constants/Colors";
+import { StyleSheet, View, Text } from "react-native";
+import { lightBlack } from "../../constants/Colors";
 
 interface DividerProps {
   text: string
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     alignSelf: "stretch",
     borderBottomColor: lightBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginBottom: 20,
+    marginVertical: 10,
     paddingBottom: 5,
   },
   dividerText: {

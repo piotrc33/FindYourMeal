@@ -80,17 +80,11 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
     minHeight: 70
-    
-    // borderColor: "black",
-    // borderWidth: 1,
   },
   cardInfo: {
     display: "flex",
     flex: 1,
     alignItems: "center"
-
-    // borderColor: "salmon",
-    // borderWidth: 1,
   },
   smallIcon: {
     width: 15,

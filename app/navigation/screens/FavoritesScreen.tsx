@@ -1,10 +1,19 @@
+import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Button } from "react-native";
+import { Card } from "react-native-elements";
+import { RootStackParamList } from "../../types/types";
 
-export default function FavoritesScreen(props) {
+type ScreenProps = {
+  navigation: StackNavigationProp<RootStackParamList, "Recommended">;
+};
+
+export default function FavoritesScreen(props: ScreenProps) {
   return (
     <View style={styles.container}>
-      <Text>Favorite Screen</Text>
+      <Card onPress={() => props.navigation.push("Recipe")} />
+
+      {/* <Text>Favorite Screen</Text>
 
       <Button
         title="go to note"
@@ -15,7 +24,7 @@ export default function FavoritesScreen(props) {
           title="go to recipe"
           onPress={() => props.navigation.push("Recipe")}
         />
-      </View>
+      </View> */}
 
       <StatusBar style="auto" />
     </View>
