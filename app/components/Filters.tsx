@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Button } from "react-native";
 import FilterButton from "./FilterButton";
 import { StatusBar } from "expo-status-bar";
-import Divider from "./Divider";
+import Divider from "./shared/Divider";
 
 interface FiltersProps {
   onSearch: () => void;

@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { lightBlack, subtleGray } from "../../constants/Colors";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../types/types";
+import IconWithText from "./shared/IconWithText";
 
 interface CardProps {
   onPress: () => void
@@ -10,10 +9,7 @@ interface CardProps {
 
 const Card: React.FC<CardProps> = (props) => {
   return (
-    <TouchableOpacity
-      style={styles.cardContainer}
-      onPress={props.onPress}
-    >
+    <TouchableOpacity style={styles.cardContainer} onPress={props.onPress}>
       <View style={styles.cardImage}>
         <Image
           style={styles.cardImage}
@@ -25,27 +21,21 @@ const Card: React.FC<CardProps> = (props) => {
         <Text style={styles.cardTitle}>Smalec Domowy</Text>
 
         <View style={[styles.flex, styles.flexRow]}>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/clock.png")}
-            />
-            <Text>50</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/serving-dish.png")}
-            />
-            <Text>50</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/health.png")}
-            />
-            <Text>50</Text>
-          </View>
+          <IconWithText
+            size="small"
+            source={require("../../assets/clock.png")}
+            text={"50"}
+          />
+          <IconWithText
+            size="small"
+            source={require("../../assets/serving-dish.png")}
+            text={"50"}
+          />
+          <IconWithText
+            size="small"
+            source={require("../../assets/health.png")}
+            text={"50"}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -85,10 +75,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     alignItems: "center"
-  },
-  smallIcon: {
-    width: 15,
-    height: 15
   },
   flex: {
     width: "80%",

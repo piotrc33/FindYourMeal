@@ -1,9 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import Divider from "../../components/Divider";
+import Divider from "../../components/shared/Divider";
 import RecipeTableRow from "../../components/RecipeTableRow";
 import { ScrollView } from "react-native-gesture-handler";
+import IconWithText from "../../components/shared/IconWithText";
 
 export default function RecipeScreen() {
   const heartIcon = require("../../../assets/favourite.png");
@@ -28,39 +29,33 @@ export default function RecipeScreen() {
 
       {/* Description */}
       <View style={styles.infoContainer}>
-        <View>
-          <Image
-            style={styles.mediumIcon}
-            source={require("../../../assets/clock.png")}
-          />
-          <Text style={{ textAlign: "center" }}>50</Text>
-        </View>
-        <View>
-          <Image
-            style={styles.mediumIcon}
-            source={require("../../../assets/serving-dish.png")}
-          />
-          <Text style={{ textAlign: "center" }}>50</Text>
-        </View>
-        <View>
-          <Image
-            style={styles.mediumIcon}
-            source={require("../../../assets/health.png")}
-          />
-          <Text style={{ textAlign: "center" }}>50</Text>
-        </View>
+        <IconWithText
+          size="medium"
+          source={require("../../../assets/clock.png")}
+          text={"50"}
+        />
+        <IconWithText
+          size="medium"
+          source={require("../../../assets/serving-dish.png")}
+          text={"50"}
+        />
+        <IconWithText
+          size="medium"
+          source={require("../../../assets/health.png")}
+          text={"50"}
+        />
       </View>
+
       <Text>
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia inventore
         obcaecati, maiores blanditiis tempora repudiandae!
       </Text>
-      
+
       <Divider text="Ingredients" />
 
       {/* <RecipeTable title="Ingredients" data={ingredientsArray} */}
       <RecipeTableRow name="slonina" amount="300g" />
       <RecipeTableRow name="jablko" amount="1 pcs." />
-
 
       <Divider text="Nutritional Values/100g" />
 
@@ -69,7 +64,12 @@ export default function RecipeScreen() {
 
       <Divider text="Instructions" />
 
-      <Text>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam, sit. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus omnis quibusdam laborum doloremque officiis iusto, recusandae maxime voluptatibus quam repudiandae.</Text>
+      <Text>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam, sit.
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus omnis
+        quibusdam laborum doloremque officiis iusto, recusandae maxime
+        voluptatibus quam repudiandae.
+      </Text>
 
       <StatusBar style="auto" />
     </ScrollView>
