@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { RootStackParamList } from "../../types/types";
 import Search from "../../components/Search";
-import Divider from "../../components/shared/Divider";
+import Divider from "../../components/Divider";
 import Card from "../../components/Card";
 import { useState } from "react";
 import Filters from "../../components/Filters";
