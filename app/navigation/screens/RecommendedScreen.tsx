@@ -1,9 +1,7 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
 import {
-  Button,
   StyleSheet,
-  Text,
   View,
   Keyboard,
   Pressable,
@@ -36,14 +34,12 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
         <View>
           <Divider text="Recommended" />
 
-          {/* TODO: flatlist of cards */}
-          <Card onPress={() => props.navigation.push("Recipe")} />
-          {/* <Divider text="Test" />
-          <Button title="test" onPress={changeView}></Button> */}
+          <Card navigation={props.navigation} recipeId={1} />
+          <Card navigation={props.navigation} recipeId={1} />
 
           <StatusBar style="auto" />
-        </View>
-      )}
+         </View>
+      )} 
     </Pressable>
   );
 }

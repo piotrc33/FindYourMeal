@@ -3,16 +3,21 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { lightBlack, subtleGray } from "../../constants/Colors";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/types";
+import IconWithText from "./shared/IconWithText";
+import { useNavigation } from "@react-navigation/native";
 
 interface CardProps {
-  onPress: () => void
+  navigation: StackNavigationProp<RootStackParamList>;
+  recipeId: number;
 }
 
 const Card: React.FC<CardProps> = (props) => {
+  const navigation = useNavigation()
+
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      onPress={props.onPress}
+      onPress={() => props.navigation.push("Recipe", { id: props.recipeId })}
     >
       <View style={styles.cardImage}>
         <Image
@@ -25,27 +30,21 @@ const Card: React.FC<CardProps> = (props) => {
         <Text style={styles.cardTitle}>Smalec Domowy</Text>
 
         <View style={[styles.flex, styles.flexRow]}>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/clock.png")}
-            />
-            <Text>50</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/serving-dish.png")}
-            />
-            <Text>50</Text>
-          </View>
-          <View>
-            <Image
-              style={styles.smallIcon}
-              source={require("../../assets/health.png")}
-            />
-            <Text>50</Text>
-          </View>
+          <IconWithText
+            source={require("../../assets/clock.png")}
+            text={"50"}
+            size={"small"}
+          />
+          <IconWithText
+            source={require("../../assets/serving-dish.png")}
+            text={"50"}
+            size={"small"}
+          />
+          <IconWithText
+            source={require("../../assets/health.png")}
+            text={"50"}
+            size={"small"}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -68,6 +67,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
 
     marginBottom: "auto",
+    margin: 15
   },
   cardImage: {
     maxHeight: "100%",
@@ -85,10 +85,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flex: 1,
     alignItems: "center"
-  },
-  smallIcon: {
-    width: 15,
-    height: 15
   },
   flex: {
     width: "80%",

@@ -3,4 +3,5 @@ export type RootStackParamList = {
   Search: { query: string };
   Recipe: { id: number };
   Recommended: undefined;
+  FavoriteList: undefined;
 };
