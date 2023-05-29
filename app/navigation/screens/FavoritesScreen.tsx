@@ -45,7 +45,6 @@ export default function FavoritesScreen(props: ScreenProps) {
     onMoveShouldSetPanResponder: (evt, gestureState) =>
       Math.abs(gestureState.dx) > Math.abs(gestureState.dy),
     onPanResponderMove: (evt, gestureState) => {
-      console.log("used pan", count++);
       if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
         // Horizontal pan detected
         if (gestureState.dx > 0) translateX.value = gestureState.dx;
@@ -74,12 +73,14 @@ export default function FavoritesScreen(props: ScreenProps) {
 
   return (
     <View {...panResponder.panHandlers} style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ backgroundColor: "white" }}
-      />
+      <View style={{width: '100%'}}>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ backgroundColor: "white" }}
+        />
+      </View>
 
       <StatusBar style="auto" />
     </View>
@@ -93,6 +94,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "column",
-    width: "100%",
+    // width: "100%",
   },
 });

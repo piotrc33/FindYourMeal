@@ -5,14 +5,15 @@ import { accentColor } from "../../constants/Colors";
 
 interface RecipeTableRowProps {
   name: string;
-  amount: string;
+  amount: number;
+  unit: string;
 }
 
 export default function RecipeTableRow(props: RecipeTableRowProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.name}>{props.name}</Text>
-      <Text style={styles.amount}>{props.amount}</Text>
+      <Text style={styles.amount}>{`${props.amount} ${props.unit}`}</Text>
 
       <StatusBar style="auto" />
     </View>

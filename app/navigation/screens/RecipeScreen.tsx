@@ -5,22 +5,50 @@ import Divider from "../../components/Divider";
 import RecipeTableRow from "../../components/RecipeTableRow";
 import { ScrollView } from "react-native-gesture-handler";
 import IconWithText from "../../components/shared/IconWithText";
+import { Recipe, Root } from "../../interfaces/recipeResponse.i";
+import { removeHtmlTags } from "../../utils/utilities";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { apiKey, baseUrl } from "../../../constants/constants";
 
-export default function RecipeScreen() {
+export default function RecipeScreen(props: any) {
   const heartIcon = require("../../../assets/favourite.png");
+  const recipe: Recipe = props.route.params.recipe;
+  // let recipeWNutrition: Recipe;
+
+  const [recipeWNutrition, setRecipeWNutrition] = useState<Recipe>();
+
+  useEffect(() => {
+    axios
+      .get<Recipe>(
+        `${baseUrl}/recipes/${recipe.id}/information?includeNutrition=true&apiKey=${apiKey}`
+      )
+      .then((response) => {
+        // const recipes: Recipe[] = [];
+        // response.data.recipes.forEach((recipe) => {
+        //   recipes.push(recipe);
+        // });
+        setRecipeWNutrition(response.data);
+      })
+      .catch((error) => {});
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <ImageBackground
         style={styles.recipeImage}
-        source={require("../../../assets/smalec.jpeg")}
+        source={
+          recipe?.image
+            ? { uri: recipe?.image }
+            : require("../../../assets/smalec.jpeg")
+        }
         resizeMode="cover"
       >
         <LinearGradient
           colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
           style={styles.recipeTitle}
         >
-          <Text style={styles.titleText}>Smalec Domowy</Text>
+          <Text style={styles.titleText}>{recipe.title}</Text>
         </LinearGradient>
         <View style={styles.heartIconContainer}>
           <Image source={heartIcon} style={styles.heartIcon} />
@@ -31,43 +59,54 @@ export default function RecipeScreen() {
       <View style={styles.infoContainer}>
         <IconWithText
           source={require("../../../assets/clock.png")}
-          text={"50"}
+          text={recipe.cookingMinutes.toString()}
           size={"medium"}
         />
         <IconWithText
           source={require("../../../assets/serving-dish.png")}
-          text={"50"}
+          text={recipe.servings.toString()}
           size={"medium"}
         />
         <IconWithText
           source={require("../../../assets/health.png")}
-          text={"50"}
+          text={recipe.healthScore.toString()}
           size={"medium"}
         />
       </View>
-      <Text>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quia inventore
-        obcaecati, maiores blanditiis tempora repudiandae!
-      </Text>
+      <Text style={styles.textSection}>{removeHtmlTags(recipe.summary)}</Text>
 
       <Divider text="Ingredients" />
 
       {/* <RecipeTable title="Ingredients" data={ingredientsArray} */}
-      <RecipeTableRow name="slonina" amount="300g" />
-      <RecipeTableRow name="jablko" amount="1 pcs." />
+      {/* <RecipeTableRow name="slonina" amount="300g" />
+      <RecipeTableRow name="jablko" amount="1 pcs." /> */}
 
-      <Divider text="Nutritional Values/100g" />
+      {recipe.extendedIngredients.map((item) => (
+        <RecipeTableRow
+          key={item.id}
+          name={item.name}
+          amount={item.amount}
+          unit={item.unit}
+        />
+      ))}
 
-      <RecipeTableRow name="Fat" amount="70g" />
-      <RecipeTableRow name="Carbohydrates" amount="8g" />
+      <Divider text="Nutritional Values Per Serving" />
+
+      {/* <RecipeTableRow name="Fat" amount="70g" />
+      <RecipeTableRow name="Carbohydrates" amount="8g" /> */}
+      {recipeWNutrition?.nutrition?.nutrients.map((item) => (
+        <RecipeTableRow
+          key={item.name}
+          name={item.name}
+          amount={item.amount}
+          unit={item.unit}
+        />
+      ))}
 
       <Divider text="Instructions" />
 
-      <Text>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quisquam, sit.
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus omnis
-        quibusdam laborum doloremque officiis iusto, recusandae maxime
-        voluptatibus quam repudiandae.
+      <Text style={styles.textSection}>
+        {removeHtmlTags(recipe.instructions)}
       </Text>
 
       <StatusBar style="auto" />
@@ -100,6 +139,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 15,
     fontSize: 20,
+    width: '80%'
   },
   heartIconContainer: {
     alignItems: "center",
@@ -127,5 +167,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingTop: 30,
     paddingBottom: 10,
+  },
+  textSection: {
+    padding: 10
   },
 });

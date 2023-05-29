@@ -1,48 +1,48 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { lightBlack, subtleGray } from "../../constants/Colors";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/types";
 import IconWithText from "./shared/IconWithText";
-import { useNavigation } from "@react-navigation/native";
+import { Recipe } from "../interfaces/recipeResponse.i";
 
 interface CardProps {
   navigation: StackNavigationProp<RootStackParamList>;
-  recipeId: number;
+  recipeId?: number;
+  recipe?: Recipe;
 }
 
-const Card: React.FC<CardProps> = (props) => {
-  const navigation = useNavigation()
+const Card: React.FC<CardProps> = ({recipe, navigation}) => {
 
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      onPress={() => props.navigation.push("Recipe", { id: props.recipeId })}
+      onPress={() => navigation.navigate("Recipe", {recipe})}
     >
-      <View style={styles.cardImage}>
+      <View style={styles.imageContainer}>
         <Image
           style={styles.cardImage}
-          source={require("../../assets/smalec.jpeg")}
+          source={recipe?.image ? {uri: recipe?.image} : require("../../assets/smalec.jpeg")}
         />
       </View>
 
       <View style={styles.cardInfo}>
-        <Text style={styles.cardTitle}>Smalec Domowy</Text>
+        <Text style={styles.cardTitle}>{recipe?.title ?? 'Smalec domowy'}</Text>
 
         <View style={[styles.flex, styles.flexRow]}>
           <IconWithText
             source={require("../../assets/clock.png")}
-            text={"50"}
+            text={recipe?.cookingMinutes?.toString() ?? ''}
             size={"small"}
           />
           <IconWithText
             source={require("../../assets/serving-dish.png")}
-            text={"50"}
+            text={recipe?.servings.toString() ?? ''}
             size={"small"}
           />
           <IconWithText
             source={require("../../assets/health.png")}
-            text={"50"}
+            text={recipe?.healthScore.toString() ?? ''}
             size={"small"}
           />
         </View>
@@ -67,31 +67,35 @@ const styles = StyleSheet.create({
     borderRadius: 10,
 
     marginBottom: "auto",
-    margin: 15
+    margin: 15,
+  },
+  imageContainer: {
+    flex: 1,
   },
   cardImage: {
-    maxHeight: "100%",
-    maxWidth: 140,
-    width: "100%",
+    flex: 1,
+    width: undefined,
+    height: undefined,
+    resizeMode: "cover",
   },
   cardTitle: {
     fontSize: 16,
     fontWeight: "600",
     width: "100%",
     textAlign: "center",
-    minHeight: 70
+    minHeight: 70,
   },
   cardInfo: {
     display: "flex",
     flex: 1,
-    alignItems: "center"
+    alignItems: "center",
   },
   flex: {
     width: "80%",
     display: "flex",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
   flexRow: {
-    flexDirection: "row"
-  }
+    flexDirection: "row",
+  },
 });
