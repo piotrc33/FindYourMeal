@@ -1,6 +1,13 @@
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Keyboard, Pressable, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Keyboard,
+  Pressable,
+  FlatList,
+  Button,
+} from "react-native";
 import { RootStackParamList } from "../../types/types";
 import Search from "../../components/Search";
 import Divider from "../../components/Divider";
@@ -10,6 +17,7 @@ import Filters from "../../components/Filters";
 import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
 import { Recipe, Root } from "../../interfaces/recipeResponse.i";
+import { SearchResponse } from "../../interfaces/searchResponse.i";
 
 type RecommendedScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Recommended">;
@@ -18,6 +26,9 @@ type RecommendedScreenProps = {
 export default function RecommendedScreen(props: RecommendedScreenProps) {
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [recipesData, setRecipesData] = useState<Recipe[]>([]);
+  const [query, setQuery] = useState<string>("");
+
+  const queryBase = `${baseUrl}/recipes/complexSearch?apiKey=${apiKey}`;
 
   const changeView = () => {
     setShowFilters(!showFilters);
@@ -35,21 +46,45 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
         });
         setRecipesData(recipes);
       })
-      .catch(error => {
-        
-      });
+      .catch((error) => {});
   }, []);
 
   const renderItem = ({ item }: { item: Recipe }) => (
     <Card recipe={item} navigation={props.navigation} />
   );
 
+  const handleSearch = () => {
+    const idsBulk: number[] = [];
+    console.log("searching endpoint", `${queryBase}&query=${query}`);
+    axios
+      .get<SearchResponse>(`${queryBase}&query=${query}`)
+      .then((response) => {
+        response.data.results.forEach((item) => {
+          idsBulk.push(item.id);
+        });
+        const idsString: string = idsBulk.join(",");
+        axios
+          .get<Recipe[]>(
+            `${baseUrl}/recipes/informationBulk?ids=${idsString}&apiKey=${apiKey}`
+          )
+          .then((response) => {
+            props.navigation.navigate("SearchResult", {resultsRecipes: response.data});
+          });
+      })
+      .catch((error) => {});
+  };
+
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-      <Search onPress={changeView} />
+      <Search onPress={changeView} query={query} setQuery={setQuery} />
 
       {showFilters ? (
-        <Filters onSearch={changeView} />
+        <>
+          <Filters onSearch={changeView} />
+          <View style={styles.searchButton}>
+            <Button title="SEARCH" onPress={handleSearch} />
+          </View>
+        </>
       ) : (
         <View style={styles.flatListContainer}>
           <Divider text="Recommended" />
@@ -82,5 +117,10 @@ const styles = StyleSheet.create({
   flatListContainer: {
     width: "100%",
     flex: 1,
+  },
+  searchButton: {
+    width: "80%",
+    alignSelf: "center",
+    marginTop: 50,
   },
 });

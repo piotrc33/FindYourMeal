@@ -6,4 +6,7 @@ export type RootStackParamList = {
   Recipe: { recipe: Recipe | undefined };
   Recommended: undefined;
   FavoriteList: undefined;
+  SearchResult: { resultsRecipes: Recipe[] };
 };
+
+export type Diet = 'Ketogenic' | 'Vegetarian' | null;

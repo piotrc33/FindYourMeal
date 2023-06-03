@@ -1,24 +1,23 @@
-import React from "react";
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  Pressable,
-} from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, View, TextInput, Pressable } from "react-native";
 
 interface SearchProps {
   onPress?: () => void;
+  setQuery: (text: string) => void;
+  query: string;
 }
 
 export default function Search(props: SearchProps) {
+
   return (
-    <Pressable
-      style={styles.searchModal}
-    >
+    <Pressable style={styles.searchModal}>
       <TextInput
         style={styles.searchInput}
         placeholder="Search"
         onFocus={props.onPress}
+        onChangeText={(text) => {
+          props.setQuery(text);
+        }}
       />
     </Pressable>
   );
