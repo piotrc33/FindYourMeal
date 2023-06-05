@@ -1,7 +1,7 @@
 # FindYourMeal
-## Find the recipe You were looking for!
+### Find the recipe You were looking for!
 
-## KRÓTKIE PODSUMOWANIE APLIKACJI:
+#### KRÓTKIE PODSUMOWANIE APLIKACJI:
 Aplikacja służy jako wyszukiwarka przepisów z rozbudowanym filtrowaniem pozwalającym wybrać:
 – Pod jaką dietę ma być przepis
 – Zakres każdej z wartości odżywczych(minimum, maximum)
@@ -13,7 +13,7 @@ notatki
 Na wyświetlany przepis będą składały się podstawowe dane jak zdjęcie, składniki, instrukcje przygotowania ale
 również wartości odżywcze, czas przygotowania, ilość porcji itd.
 
-OPIS DOSTARCZANYCH FUNKCJONALNOŚCI:
+#### OPIS DOSTARCZANYCH FUNKCJONALNOŚCI:
 
 - Wyświetlanie rekomendowanych przepisów
 - Wyszukiwanie przepisów na podstawie wpisanych słów oraz wybranych filtrów
