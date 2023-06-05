@@ -22,8 +22,7 @@ również wartości odżywcze, czas przygotowania, ilość porcji itd.
 - Usuwanie zapisanych przepisów poprzez przeciągnięcie
 
 ### Aktualne screeny z aplikacji:
-
-![screen1](https://github.com/piotrc33/FindYourMeal/assets/73281734/788434e9-eb32-4ab7-85ba-dfe771481439)
-![screen2](https://github.com/piotrc33/FindYourMeal/assets/73281734/9fa43496-f9c2-4f43-a6df-1231b7b00fc6)
-![screen3](https://github.com/piotrc33/FindYourMeal/assets/73281734/0abf27c4-cd71-4c74-8cfb-12c23ccbfae8)
-![screen4](https://github.com/piotrc33/FindYourMeal/assets/73281734/927cfda4-a6b4-4ef8-9f16-46f8950f9373)
+<img src="https://github.com/piotrc33/FindYourMeal/assets/73281734/788434e9-eb32-4ab7-85ba-dfe771481439" width="200" />
+<img src="https://github.com/piotrc33/FindYourMeal/assets/73281734/9fa43496-f9c2-4f43-a6df-1231b7b00fc6" width="200" />
+<img src="https://github.com/piotrc33/FindYourMeal/assets/73281734/0abf27c4-cd71-4c74-8cfb-12c23ccbfae8" width="200" />
+<img src="https://github.com/piotrc33/FindYourMeal/assets/73281734/927cfda4-a6b4-4ef8-9f16-46f8950f9373" width="200" />
