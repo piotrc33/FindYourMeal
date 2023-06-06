@@ -9,4 +9,16 @@ export type RootStackParamList = {
   SearchResult: { resultsRecipes: Recipe[] };
 };
 
-export type Diet = 'Ketogenic' | 'Vegetarian' | null;
+export type Diet =
+  | "ketogenic"
+  | "vegetarian"
+  | "vegan"
+  | "paleo"
+  | "gluten-free";
+
+export type MealType =
+  | "breakfast"
+  | "soup"
+  | "main course"
+  | "dessert"
+  | "side dish";

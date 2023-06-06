@@ -27,6 +27,7 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [recipesData, setRecipesData] = useState<Recipe[]>([]);
   const [query, setQuery] = useState<string>("");
+  const [filterQuery, setFilterQuery] = useState<string>("");
 
   const queryBase = `${baseUrl}/recipes/complexSearch?apiKey=${apiKey}`;
 
@@ -49,15 +50,19 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
       .catch((error) => {});
   }, []);
 
+  useEffect(() => {
+    console.log(filterQuery);
+  }, [filterQuery]);  
+
   const renderItem = ({ item }: { item: Recipe }) => (
     <Card recipe={item} navigation={props.navigation} />
   );
 
   const handleSearch = () => {
     const idsBulk: number[] = [];
-    console.log("searching endpoint", `${queryBase}&query=${query}`);
+    console.log("searching endpoint", `${queryBase}&query=${query}${filterQuery}`);
     axios
-      .get<SearchResponse>(`${queryBase}&query=${query}`)
+      .get<SearchResponse>(`${queryBase}&query=${query}${filterQuery}`)
       .then((response) => {
         response.data.results.forEach((item) => {
           idsBulk.push(item.id);
@@ -68,7 +73,9 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
             `${baseUrl}/recipes/informationBulk?ids=${idsString}&apiKey=${apiKey}`
           )
           .then((response) => {
-            props.navigation.navigate("SearchResult", {resultsRecipes: response.data});
+            props.navigation.navigate("SearchResult", {
+              resultsRecipes: response.data,
+            });
           });
       })
       .catch((error) => {});
@@ -76,13 +83,16 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
 
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-      <Search onPress={changeView} query={query} setQuery={setQuery} />
+      <Search showFilters={showFilters} setShowFilters={setShowFilters} onPress={changeView} query={query} setQuery={setQuery} />
 
       {showFilters ? (
         <>
-          <Filters onSearch={changeView} />
+          <Filters setFilters={setFilterQuery}/>
           <View style={styles.searchButton}>
             <Button title="SEARCH" onPress={handleSearch} />
+          </View>
+          <View style={styles.backButton}>
+            <Button title="BACK" onPress={() => setShowFilters(false)} />
           </View>
         </>
       ) : (
@@ -122,5 +132,9 @@ const styles = StyleSheet.create({
     width: "80%",
     alignSelf: "center",
     marginTop: 50,
+  },
+  backButton: {
+    width: "80%",
+    marginTop: 20,
   },
 });

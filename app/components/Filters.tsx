@@ -1,30 +1,48 @@
-import React, { useState } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import FilterButton from "./FilterButton";
 import { StatusBar } from "expo-status-bar";
 import Divider from "./Divider";
-import { apiKey, baseUrl } from "../../constants/constants";
 import { Diet } from "../types/types";
+import { diets, mealTypes } from "../../constants/filters";
 
 interface FiltersProps {
-  onSearch: () => void;
+  setFilters: Dispatch<SetStateAction<string>>;
 }
 
 export default function Filters(props: FiltersProps) {
-  const [diet, setDiet] = useState<Diet>(null);
+  const [dietFilters, setDietFilters] = useState<Diet[]>([]);
 
-  const handleSearch = () => {
-    // prepare the query based on filters
-    // navigate to search results
+  useEffect(() => {
+    console.log(dietFilters);
+    props.setFilters(buildFilterQuery());
+    // sendQuery();
+  }, [dietFilters]);  
+
+  const buildFilterQuery = (): string => {
+    let queryString: string = '';
+    if(dietFilters) {
+      queryString += `&diet=${dietFilters}`;
+    }
+
+    return queryString;
   }
 
   return (
     <View style={styles.container}>
       <Divider text="Diet" />
       <View style={styles.buttonsContainer}>
-        <FilterButton text="Ketogenic" />
-        <FilterButton text="Ketogenic" />
-        <FilterButton text="Ketogenic" />
+        {diets.map((item) => {
+          return (
+            <FilterButton
+              key={item}
+              diets={dietFilters}
+              value={item}
+              setter={setDietFilters}
+              text={item?.toString()}
+            />
+          );
+        })}
       </View>
 
       <Divider text="Type" />
@@ -33,15 +51,6 @@ export default function Filters(props: FiltersProps) {
         <FilterButton text="Lunch" />
         <FilterButton text="Dinner" />
       </View>
-
-      {/* <View style={styles.searchButton}>
-        <Button
-          title="SEARCH"
-          onPress={() => {
-            props.onSearch();
-          }}
-        />
-      </View> */}
 
       <StatusBar style="auto" />
     </View>
@@ -52,12 +61,13 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: "auto",
-    // backgroundColor: 'salmon'
   },
   buttonsContainer: {
     marginHorizontal: 10,
     flexDirection: "row",
     marginBottom: 10,
+    width: '100%',
+    flexWrap: 'wrap'
   },
   searchButton: {
     width: "80%",

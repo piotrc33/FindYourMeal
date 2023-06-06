@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { StyleSheet, View, TextInput, Pressable } from "react-native";
 
 interface SearchProps {
   onPress?: () => void;
   setQuery: (text: string) => void;
   query: string;
+  setShowFilters: Dispatch<SetStateAction<boolean>>;
+  showFilters?: boolean;
 }
 
 export default function Search(props: SearchProps) {
+
+  const handleFocus = () => {
+    if(!props.showFilters)
+      props.setShowFilters(true);
+  }
 
   return (
     <Pressable style={styles.searchModal}>
       <TextInput
         style={styles.searchInput}
         placeholder="Search"
-        onFocus={props.onPress}
+        onFocus={handleFocus}
         onChangeText={(text) => {
           props.setQuery(text);
         }}
