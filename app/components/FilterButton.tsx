@@ -2,16 +2,15 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { accentColor, subtleGray } from "../../constants/Colors";
 import { lightBlack } from "../../constants/Colors";
-import { Diet } from "../types/types";
 
-interface FilterButtonProps {
+interface FilterButtonProps<T> {
   text?: string;
-  diets?: Diet[] ;
-  value?: Diet;
-  setter?: Dispatch<SetStateAction<Diet[]>>; 
+  state?: T[] ;
+  value?: T;
+  setter?: Dispatch<SetStateAction<T[]>>; 
 }
 
-export default function FilterButton(props: FilterButtonProps) {
+export default function FilterButton<T>(props: FilterButtonProps<T>) {
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const setActive = () => {
@@ -21,11 +20,11 @@ export default function FilterButton(props: FilterButtonProps) {
   const handlePress = () => {
     setActive();
     if(props.setter && props.value !== undefined){
-      if(!props.diets?.includes(props.value)) {
-        props.setter([...(props.diets ?? []), props.value]);
+      if(!props.state?.includes(props.value)) {
+        props.setter([...(props.state ?? []), props.value]);
       } 
       else {
-        props.setter(props.diets.filter((item) => item !== props.value));
+        props.setter(props.state.filter((item) => item !== props.value));
       }
     }
   }

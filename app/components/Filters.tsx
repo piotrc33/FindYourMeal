@@ -3,8 +3,9 @@ import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import FilterButton from "./FilterButton";
 import { StatusBar } from "expo-status-bar";
 import Divider from "./Divider";
-import { Diet } from "../types/types";
+import { Diet, MealType } from "../types/types";
 import { diets, mealTypes } from "../../constants/filters";
+import * as SQLite from 'expo-sqlite'
 
 interface FiltersProps {
   setFilters: Dispatch<SetStateAction<string>>;
@@ -12,17 +13,21 @@ interface FiltersProps {
 
 export default function Filters(props: FiltersProps) {
   const [dietFilters, setDietFilters] = useState<Diet[]>([]);
+  const [mealTypeFilters, setMealTypeFilters] = useState<MealType[]>([]);
 
   useEffect(() => {
     console.log(dietFilters);
     props.setFilters(buildFilterQuery());
     // sendQuery();
-  }, [dietFilters]);  
+  }, [dietFilters, mealTypeFilters]);  
 
   const buildFilterQuery = (): string => {
     let queryString: string = '';
     if(dietFilters) {
       queryString += `&diet=${dietFilters}`;
+    }
+    if(mealTypeFilters) {
+      queryString += `&type=${mealTypeFilters}`;
     }
 
     return queryString;
@@ -34,9 +39,9 @@ export default function Filters(props: FiltersProps) {
       <View style={styles.buttonsContainer}>
         {diets.map((item) => {
           return (
-            <FilterButton
+            <FilterButton<Diet>
               key={item}
-              diets={dietFilters}
+              state={dietFilters}
               value={item}
               setter={setDietFilters}
               text={item?.toString()}
@@ -47,9 +52,21 @@ export default function Filters(props: FiltersProps) {
 
       <Divider text="Type" />
       <View style={styles.buttonsContainer}>
-        <FilterButton text="Breakfast" />
+        {mealTypes.map((item) => {
+          return (
+            <FilterButton<MealType>
+              key={item}
+              state={mealTypeFilters}
+              value={item}
+              setter={setMealTypeFilters}
+              text={item?.toString()}
+            />
+          );
+        })}
+
+        {/* <FilterButton text="Breakfast" />
         <FilterButton text="Lunch" />
-        <FilterButton text="Dinner" />
+        <FilterButton text="Dinner" /> */}
       </View>
 
       <StatusBar style="auto" />

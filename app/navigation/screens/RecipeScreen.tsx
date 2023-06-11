@@ -1,20 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Divider from "../../components/Divider";
 import RecipeTableRow from "../../components/RecipeTableRow";
 import { ScrollView } from "react-native-gesture-handler";
 import IconWithText from "../../components/shared/IconWithText";
-import { Recipe, Root } from "../../interfaces/recipeResponse.i";
+import { ExtendedIngredient, Ingredient, Recipe, Root } from "../../interfaces/recipeResponse.i";
 import { removeHtmlTags } from "../../utils/utilities";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
+import * as SQLite from "expo-sqlite";
+import { deleteTables, logIngredients, logSavedRecipes, saveRecipe } from "../../utils/database";
 
 export default function RecipeScreen(props: any) {
   const heartIcon = require("../../../assets/favourite.png");
   const recipe: Recipe = props.route.params.recipe;
-  // let recipeWNutrition: Recipe;
+  const db = SQLite.openDatabase("recipes.db");
 
   const [recipeWNutrition, setRecipeWNutrition] = useState<Recipe>();
 
@@ -24,10 +26,6 @@ export default function RecipeScreen(props: any) {
         `${baseUrl}/recipes/${recipe.id}/information?includeNutrition=true&apiKey=${apiKey}`
       )
       .then((response) => {
-        // const recipes: Recipe[] = [];
-        // response.data.recipes.forEach((recipe) => {
-        //   recipes.push(recipe);
-        // });
         setRecipeWNutrition(response.data);
       })
       .catch((error) => {});
@@ -50,9 +48,9 @@ export default function RecipeScreen(props: any) {
         >
           <Text style={styles.titleText}>{recipe.title}</Text>
         </LinearGradient>
-        <View style={styles.heartIconContainer}>
+        <TouchableOpacity style={styles.heartIconContainer} onPress={() => saveRecipe(recipe)}>
           <Image source={heartIcon} style={styles.heartIcon} />
-        </View>
+        </TouchableOpacity>
       </ImageBackground>
 
       {/* Description */}
