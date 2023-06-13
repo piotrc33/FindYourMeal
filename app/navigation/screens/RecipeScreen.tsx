@@ -10,13 +10,12 @@ import { removeHtmlTags } from "../../utils/utilities";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
-import * as SQLite from "expo-sqlite";
 import { deleteTables, logIngredients, logSavedRecipes, saveRecipe } from "../../utils/database";
 
 export default function RecipeScreen(props: any) {
   const heartIcon = require("../../../assets/favourite.png");
   const recipe: Recipe = props.route.params.recipe;
-  const db = SQLite.openDatabase("recipes.db");
+  const ingredients: Ingredient[] = props.route.params.ingredients;
 
   const [recipeWNutrition, setRecipeWNutrition] = useState<Recipe>();
 
@@ -49,6 +48,7 @@ export default function RecipeScreen(props: any) {
           <Text style={styles.titleText}>{recipe.title}</Text>
         </LinearGradient>
         <TouchableOpacity style={styles.heartIconContainer} onPress={() => saveRecipe(recipe)}>
+        {/* <TouchableOpacity style={styles.heartIconContainer} onPress={() => deleteTables()}> */}
           <Image source={heartIcon} style={styles.heartIcon} />
         </TouchableOpacity>
       </ImageBackground>
@@ -75,23 +75,26 @@ export default function RecipeScreen(props: any) {
 
       <Divider text="Ingredients" />
 
-      {/* <RecipeTable title="Ingredients" data={ingredientsArray} */}
-      {/* <RecipeTableRow name="slonina" amount="300g" />
-      <RecipeTableRow name="jablko" amount="1 pcs." /> */}
-
-      {recipe.extendedIngredients.map((item) => (
+      {ingredients ? ingredients.map((item, index) => (
         <RecipeTableRow
-          key={item.id}
+          key={index}
           name={item.name}
           amount={item.amount}
           unit={item.unit}
         />
-      ))}
+      )) :
+      recipeWNutrition?.extendedIngredients.map((item, index) => (
+        <RecipeTableRow
+          key={index}
+          name={item.name}
+          amount={item.amount}
+          unit={item.unit}
+        />
+      ))
+      }
 
       <Divider text="Nutritional Values Per Serving" />
 
-      {/* <RecipeTableRow name="Fat" amount="70g" />
-      <RecipeTableRow name="Carbohydrates" amount="8g" /> */}
       {recipeWNutrition?.nutrition?.nutrients.map((item) => (
         <RecipeTableRow
           key={item.name}

@@ -1,9 +1,9 @@
-import { Recipe } from "../interfaces/recipeResponse.i";
+import { Ingredient, Recipe } from "../interfaces/recipeResponse.i";
 
 export type RootStackParamList = {
   Home: undefined;
   Search: { query: string };
-  Recipe: { recipe: Recipe | undefined };
+  Recipe: { recipe: Recipe | undefined, ingredients?: Ingredient[] };
   Recommended: undefined;
   FavoriteList: undefined;
   SearchResult: { resultsRecipes: Recipe[] };

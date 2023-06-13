@@ -7,27 +7,18 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { deleteIngredients, deleteRecipe, loadIngredients, loadRecipes } from "../../utils/database";
+import { Ingredient, Recipe } from "../../interfaces/recipeResponse.i";
 
 type ScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "FavoriteList">;
 };
 
 export default function FavoritesScreen(props: ScreenProps) {
-  const data = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-  ];
-
   const translateX = useSharedValue(0);
 
-  const [movedIdState, setMovedIdState] = useState(0);
-  let movedId = 0;
+  const [movedId, setMovedId] = useState(0);
 
   const rStyle = useAnimatedStyle(() => {
     return {
@@ -38,7 +29,6 @@ export default function FavoritesScreen(props: ScreenProps) {
       ],
     };
   });
-  let count = 0; // for debugging
 
   let panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => false,
@@ -54,28 +44,63 @@ export default function FavoritesScreen(props: ScreenProps) {
     onPanResponderEnd(e, gestureState) {
       translateX.value = 0;
       if (Math.abs(gestureState.dx) < 2) {
-        props.navigation.navigate("Recipe", { id: 1 });
+        let clickedRecipe: Recipe | undefined = favoriteRecipes.find(
+          (item) => item.id === movedId
+        );
+        if (clickedRecipe)
+          props.navigation.navigate("Recipe", { recipe: clickedRecipe });
       }
+      if (Math.abs(gestureState.dx) > 170) {
+        deleteRecipe(movedId);
+        deleteIngredients(movedId);
+        loadDataFromDB();
+      }
+      console.log(`moved id: ${movedId}`)
     },
   });
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: Recipe }) => (
     <Animated.View
       onTouchStart={() => {
-        setMovedIdState(item.id);
-        movedId = item.id;
+        setMovedId(item.id);
       }}
-      style={movedIdState === item.id ? rStyle : {}}
+      style={movedId === item.id ? rStyle : {}}
     >
-      <Card recipeId={item.id} navigation={props.navigation} />
+      <Card
+        recipe={item}
+        ingredients={ingredients}
+        navigation={props.navigation}
+      />
     </Animated.View>
   );
 
+  const loadDataFromDB = () => {
+    loadRecipes()
+      .then((recipes) => {
+        setFavoriteRecipes(recipes);
+      })
+      .catch((err) => console.error("Error loading recipes:", err));
+    loadIngredients()
+      .then((ingredients) => {
+        setIngredients(ingredients);
+      })
+      .catch((err) => console.error("Error loading ingredients:", err));
+  };
+
+  const [favoriteRecipes, setFavoriteRecipes] = useState<Recipe[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", loadDataFromDB);
+
+    // Clean up the subscription when the component is unmounted
+    return unsubscribe;
+  }, []);
+
   return (
     <View {...panResponder.panHandlers} style={styles.container}>
-      <View style={{width: '100%'}}>
+      <View style={{ width: "100%" }}>
         <FlatList
-          data={data}
+          data={favoriteRecipes}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ backgroundColor: "white" }}
@@ -92,8 +117,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
     flexDirection: "column",
-    // width: "100%",
   },
 });

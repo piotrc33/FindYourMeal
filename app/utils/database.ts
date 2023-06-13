@@ -1,8 +1,9 @@
 import * as SQLite from "expo-sqlite";
-import { ExtendedIngredient, Recipe } from "../interfaces/recipeResponse.i";
+import { ExtendedIngredient, Ingredient, Recipe } from "../interfaces/recipeResponse.i";
+
+const db = SQLite.openDatabase("recipes.db");
 
 const setupDatabase = () => {
-  const db = SQLite.openDatabase("recipes.db");
 
   db.transaction((tx) => {
     tx.executeSql(
@@ -22,6 +23,7 @@ const setupDatabase = () => {
       `CREATE TABLE IF NOT EXISTS SavedRecipes (
       id INTEGER PRIMARY KEY,
       title TEXT NOT NULL,
+      image TEXT,
       cookingMinutes INTEGER,
       servings INTEGER,
       healthScore INTEGER,
@@ -33,33 +35,13 @@ const setupDatabase = () => {
   });
 };
 
-export const logSavedRecipes = () => {
-  const db = SQLite.openDatabase("recipes.db");
-
-  db.transaction((tx) => {
-    tx.executeSql(
-      "SELECT * FROM SavedRecipes;",
-      [],
-      (_, { rows }) => {
-        console.log("Saved Recipes:");
-        rows._array.forEach((row) => {
-          console.log(row);
-        });
-      },
-      (_, error) => {
-        console.error("Error fetching saved recipes:", error);
-        return true;
-      }
-    );
-  });
-};
-
 export const saveRecipe = (recipe: Recipe) => {
   const db = SQLite.openDatabase("recipes.db");
 
   const {
     id,
     title,
+    image,
     cookingMinutes,
     servings,
     healthScore,
@@ -70,9 +52,9 @@ export const saveRecipe = (recipe: Recipe) => {
 
   db.transaction((tx) => {
     tx.executeSql(
-      `INSERT INTO SavedRecipes (id, title, cookingMinutes, servings, healthScore, summary, instructions)
-      VALUES (?, ?, ?, ?, ?, ?, ?);`,
-      [id, title, cookingMinutes, servings, healthScore, summary, instructions],
+      `INSERT INTO SavedRecipes (id, title, image, cookingMinutes, servings, healthScore, summary, instructions)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+      [id, title, image, cookingMinutes, servings, healthScore, summary, instructions],
       (_, { rowsAffected }) => {
         if (rowsAffected > 0) {
           console.log("Recipe saved successfully!");
@@ -118,24 +100,83 @@ export const saveIngredients = (
   });
 };
 
-// Function to log the current items in the Ingredients table
-export const logIngredients = () => {
+export const loadRecipes = () => {
+  const db = SQLite.openDatabase('recipes.db');
+
+  return new Promise<Recipe[]>((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        "SELECT * FROM SavedRecipes;",
+        [],
+        (_, { rows }) => {
+          console.log('loaded recipes!')
+          const recipes = rows._array;
+          resolve(recipes);
+        },
+        (_, error) => {
+          reject(error);
+          return true;
+        }
+      );
+    })
+  })
+}
+
+export const loadIngredients = () => {
   const db = SQLite.openDatabase("recipes.db");
 
-  db.transaction((tx) =>
+  return new Promise<Ingredient[]>((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM Ingredients;",
+        [],
+        (_, { rows }) => {
+          console.log("loaded ingredients!");
+          const ingredients = rows._array;
+          resolve(ingredients);
+        },
+        (_, error) => {
+          reject(error);
+          return true;
+        }
+      );
+    });
+  });
+};
+
+export const deleteRecipe = (recipeId: number) => {
+  db.transaction((tx) => {
     tx.executeSql(
-      "SELECT * FROM Ingredients",
-      [],
-      (_, { rows }) => {
-        console.log("Ingredients: ");
-        rows._array.forEach((row) => console.log(row));
+      "DELETE FROM SavedRecipes WHERE id = ?;",
+      [recipeId],
+      (_, { rowsAffected }) => {
+        console.log(`Deleted ${rowsAffected} recipe(s) successfully.`);
+
+        // Delete associated ingredients
+        deleteIngredients(recipeId);
       },
       (_, error) => {
-        console.error(error);
+        console.error("Error deleting recipe:", error);
         return true;
       }
-    )
-  );
+    );
+  });
+};
+
+export const deleteIngredients = (recipeId: number) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "DELETE FROM Ingredients WHERE recipeId = ?;",
+      [recipeId],
+      (_, { rowsAffected }) => {
+        console.log(`Deleted ${rowsAffected} ingredient(s) successfully.`);
+      },
+      (_, error) => {
+        console.error("Error deleting ingredients:", error);
+        return true;
+      }
+    );
+  });
 };
 
 export const deleteTables = () => {
@@ -154,6 +195,47 @@ export const deleteTables = () => {
       }
     );
   });
+};
+
+export const logSavedRecipes = () => {
+  const db = SQLite.openDatabase("recipes.db");
+
+  db.transaction((tx) => {
+    tx.executeSql(
+      "SELECT * FROM SavedRecipes;",
+      [],
+      (_, { rows }) => {
+        console.log("Saved Recipes:");
+        rows._array.forEach((row) => {
+          console.log(row);
+        });
+      },
+      (_, error) => {
+        console.error("Error fetching saved recipes:", error);
+        return true;
+      }
+    );
+  });
+};
+
+// Function to log the current items in the Ingredients table
+export const logIngredients = () => {
+  const db = SQLite.openDatabase("recipes.db");
+
+  db.transaction((tx) =>
+    tx.executeSql(
+      "SELECT * FROM Ingredients",
+      [],
+      (_, { rows }) => {
+        console.log("Ingredients: ");
+        rows._array.forEach((row) => console.log(row));
+      },
+      (_, error) => {
+        console.error(error);
+        return true;
+      }
+    )
+  );
 };
 
 export default setupDatabase;

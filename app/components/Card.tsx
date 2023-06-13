@@ -4,20 +4,20 @@ import { lightBlack, subtleGray } from "../../constants/Colors";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../types/types";
 import IconWithText from "./shared/IconWithText";
-import { Recipe } from "../interfaces/recipeResponse.i";
+import { Ingredient, Recipe } from "../interfaces/recipeResponse.i";
 
 interface CardProps {
   navigation: StackNavigationProp<RootStackParamList>;
   recipeId?: number;
   recipe?: Recipe;
+  ingredients?: Ingredient[];
 }
 
-const Card: React.FC<CardProps> = ({recipe, navigation}) => {
-
+const Card: React.FC<CardProps> = ({recipe, ingredients, navigation}) => {
   return (
     <TouchableOpacity
       style={styles.cardContainer}
-      onPress={() => navigation.navigate("Recipe", {recipe})}
+      onPress={() => navigation.navigate("Recipe", {recipe, ingredients})}
     >
       <View style={styles.imageContainer}>
         <Image
