@@ -210,6 +210,27 @@ export const deleteIngredients = (recipeId: number) => {
   });
 };
 
+export const isRecipeInDB = (recipeId: number) => {
+  return new Promise<boolean>((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT COUNT(*) AS count FROM SavedRecipes WHERE id = ?;",
+        [recipeId],
+        (_, { rows }) => {
+          const { count } = rows.item(0);
+          const isFound = count > 0;
+          resolve(isFound);
+        },
+        (_, error) => {
+          console.error("Error checking recipe existence:", error);
+          reject(error);
+          return true;
+        }
+      );
+    });
+  });
+};
+
 export const deleteTables = () => {
   db.transaction((tx) => {
     tx.executeSql(

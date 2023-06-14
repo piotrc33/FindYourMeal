@@ -1,18 +1,25 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, ImageBackground, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Divider from "../../components/Divider";
 import RecipeTableRow from "../../components/RecipeTableRow";
 import { ScrollView } from "react-native-gesture-handler";
 import IconWithText from "../../components/shared/IconWithText";
-import { ExtendedIngredient, Ingredient, Recipe, Root } from "../../interfaces/recipeResponse.i";
+import { Ingredient, Recipe } from "../../interfaces/recipeResponse.i";
 import { removeHtmlTags } from "../../utils/utilities";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
-import { deleteTables, logIngredients, logSavedRecipes, saveRecipe } from "../../utils/database";
+import { deleteTables, isRecipeInDB, saveRecipe } from "../../utils/database";
 import { FavoriteContext } from "../../utils/FavoriteContext";
-import {accentColor} from "../../../constants/Colors";
+import { accentColor } from "../../../constants/Colors";
 
 export default function RecipeScreen(props: any) {
   const { setFavoriteRecipeId, favoriteRecipeId } = useContext(FavoriteContext);
@@ -20,9 +27,15 @@ export default function RecipeScreen(props: any) {
   const recipe: Recipe = props.route.params.recipe;
   const ingredients: Ingredient[] = props.route.params.ingredients;
   const [recipeWNutrition, setRecipeWNutrition] = useState<Recipe>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   useEffect(() => {
     setFavoriteRecipeId(recipe.id);
+    isRecipeInDB(recipe.id)
+      .then((isFound) => {
+        setIsFavorite(isFound);
+      })
+      .catch((err) => console.error("Error loading recipes:", err));
 
     axios
       .get<Recipe>(
@@ -51,7 +64,14 @@ export default function RecipeScreen(props: any) {
         >
           <Text style={styles.titleText}>{recipe.title}</Text>
         </LinearGradient>
-        <TouchableOpacity style={styles.heartIconContainer} onPress={() => saveRecipe(recipe)}>
+        <TouchableOpacity
+          style={[styles.heartIconContainer, isFavorite ? styles.active : null]}
+          onPress={() => {
+            // deleteTables();
+            saveRecipe(recipe);
+            setIsFavorite(true);
+          }}
+        >
           <Image source={heartIcon} style={styles.heartIcon} />
         </TouchableOpacity>
       </ImageBackground>
@@ -78,23 +98,23 @@ export default function RecipeScreen(props: any) {
 
       <Divider text="Ingredients" />
 
-      {ingredients ? ingredients.map((item, index) => (
-        <RecipeTableRow
-          key={index}
-          name={item.name}
-          amount={item.amount}
-          unit={item.unit}
-        />
-      )) :
-      recipeWNutrition?.extendedIngredients.map((item, index) => (
-        <RecipeTableRow
-          key={index}
-          name={item.name}
-          amount={item.amount}
-          unit={item.unit}
-        />
-      ))
-      }
+      {ingredients
+        ? ingredients.map((item, index) => (
+            <RecipeTableRow
+              key={index}
+              name={item.name}
+              amount={item.amount}
+              unit={item.unit}
+            />
+          ))
+        : recipeWNutrition?.extendedIngredients.map((item, index) => (
+            <RecipeTableRow
+              key={index}
+              name={item.name}
+              amount={item.amount}
+              unit={item.unit}
+            />
+          ))}
 
       <Divider text="Nutritional Values Per Serving" />
 
@@ -143,12 +163,12 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 15,
     fontSize: 20,
-    width: '80%'
+    width: "80%",
   },
   heartIconContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: accentColor,
+    backgroundColor: "white",
     borderRadius: 60,
     padding: 10,
     width: heartIconSide + 2 * 10,
@@ -173,6 +193,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   textSection: {
-    padding: 10
+    padding: 10,
+  },
+  active: {
+    backgroundColor: accentColor,
   },
 });

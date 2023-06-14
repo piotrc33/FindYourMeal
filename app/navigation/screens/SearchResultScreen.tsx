@@ -5,9 +5,7 @@ import {
   Keyboard,
   Pressable,
   FlatList,
-  Button,
 } from "react-native";
-import Search from "../../components/Search";
 import Divider from "../../components/Divider";
 import Card from "../../components/Card";
 import { Recipe } from "../../interfaces/recipeResponse.i";
@@ -21,8 +19,6 @@ export default function SearchResultScreen(props: any) {
 
   return (
     <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-      {/* <Search onPress={changeView} query={query} setQuery={setQuery} /> */}
-
       <View style={styles.flatListContainer}>
         <Divider text="Results" />
 
@@ -49,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
     width: "100%",
+    marginTop: 40,
   },
   flatListContainer: {
     width: "100%",

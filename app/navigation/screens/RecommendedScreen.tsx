@@ -18,6 +18,7 @@ import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
 import { Recipe, Root } from "../../interfaces/recipeResponse.i";
 import { SearchResponse } from "../../interfaces/searchResponse.i";
+import { accentColor } from "../../../constants/Colors";
 
 type RecommendedScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, "Recommended">;
@@ -89,10 +90,10 @@ export default function RecommendedScreen(props: RecommendedScreenProps) {
         <>
           <Filters setFilters={setFilterQuery}/>
           <View style={styles.searchButton}>
-            <Button title="SEARCH" onPress={handleSearch} />
+            <Button title="SEARCH" color={accentColor} onPress={handleSearch} />
           </View>
           <View style={styles.backButton}>
-            <Button title="BACK" onPress={() => setShowFilters(false)} />
+            <Button title="BACK" color={accentColor} onPress={() => setShowFilters(false)} />
           </View>
         </>
       ) : (

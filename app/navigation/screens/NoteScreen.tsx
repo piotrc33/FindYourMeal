@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import { FavoriteContext } from "../../utils/FavoriteContext";
 import { loadNote, updateNote } from "../../utils/database";
+import { accentColor } from "../../../constants/Colors";
 
 export default function NoteScreen(props: any) {
   const { favoriteRecipeId } = useContext(FavoriteContext);
@@ -31,7 +32,7 @@ export default function NoteScreen(props: any) {
         value={note}
       />
       <View style={styles.saveButton}>
-        <Button title="SAVE" onPress={handleSave} />
+        <Button title="SAVE" color={accentColor} onPress={handleSave} />
       </View>
       <StatusBar style="auto" />
     </View>

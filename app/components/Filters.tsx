@@ -1,11 +1,10 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, View } from "react-native";
 import FilterButton from "./FilterButton";
 import { StatusBar } from "expo-status-bar";
 import Divider from "./Divider";
 import { Diet, MealType } from "../types/types";
 import { diets, mealTypes } from "../../constants/filters";
-import * as SQLite from 'expo-sqlite'
 
 interface FiltersProps {
   setFilters: Dispatch<SetStateAction<string>>;
@@ -18,7 +17,6 @@ export default function Filters(props: FiltersProps) {
   useEffect(() => {
     console.log(dietFilters);
     props.setFilters(buildFilterQuery());
-    // sendQuery();
   }, [dietFilters, mealTypeFilters]);  
 
   const buildFilterQuery = (): string => {
@@ -63,10 +61,6 @@ export default function Filters(props: FiltersProps) {
             />
           );
         })}
-
-        {/* <FilterButton text="Breakfast" />
-        <FilterButton text="Lunch" />
-        <FilterButton text="Dinner" /> */}
       </View>
 
       <StatusBar style="auto" />
