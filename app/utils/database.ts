@@ -29,14 +29,15 @@ const setupDatabase = () => {
       healthScore INTEGER,
       summary TEXT,
       ingredients TEXT,
-      instructions TEXT
+      instructions TEXT,
+      note TEXT
     );`
     );
   });
 };
 
 export const saveRecipe = (recipe: Recipe) => {
-  const db = SQLite.openDatabase("recipes.db");
+  // const db = SQLite.openDatabase("recipes.db");
 
   const {
     id,
@@ -75,8 +76,6 @@ export const saveIngredients = (
   recipeId: number,
   ingredients: ExtendedIngredient[]
 ) => {
-  const db = SQLite.openDatabase('recipes.db');
-
   db.transaction((tx) => {
     ingredients.forEach((ingredient: ExtendedIngredient) => {
       const { name, amount, unit } = ingredient;
@@ -100,9 +99,23 @@ export const saveIngredients = (
   });
 };
 
-export const loadRecipes = () => {
-  const db = SQLite.openDatabase('recipes.db');
+export const updateNote = (recipeId: number, note: string) => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      "UPDATE SavedRecipes SET note = ? WHERE id = ?;",
+      [note, recipeId],
+      (_, { rowsAffected }) => {
+        console.log(`Updated ${rowsAffected} recipe(s) successfully.`);
+      },
+      (_, error) => {
+        console.error("Error updating recipe note:", error);
+        return true;
+      }
+    );
+  });
+};
 
+export const loadRecipes = () => {
   return new Promise<Recipe[]>((resolve, reject) => {
     db.transaction(tx => {
       tx.executeSql(
@@ -123,8 +136,6 @@ export const loadRecipes = () => {
 }
 
 export const loadIngredients = () => {
-  const db = SQLite.openDatabase("recipes.db");
-
   return new Promise<Ingredient[]>((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(
@@ -134,6 +145,26 @@ export const loadIngredients = () => {
           console.log("loaded ingredients!");
           const ingredients = rows._array;
           resolve(ingredients);
+        },
+        (_, error) => {
+          reject(error);
+          return true;
+        }
+      );
+    });
+  });
+};
+
+export const loadNote = (recipeId: number) => {
+  return new Promise<string>((resolve, reject) => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT note FROM SavedRecipes WHERE id = ?;",
+        [recipeId],
+        (_, { rows }) => {
+          console.log("loaded note!");
+          const note = rows._array[0]["note"];
+          resolve(note);
         },
         (_, error) => {
           reject(error);
@@ -180,8 +211,6 @@ export const deleteIngredients = (recipeId: number) => {
 };
 
 export const deleteTables = () => {
-  const db = SQLite.openDatabase("recipes.db");
-
   db.transaction((tx) => {
     tx.executeSql(
       "DROP TABLE IF EXISTS SavedRecipes; DROP TABLE IF EXISTS Ingredients;",
@@ -198,7 +227,6 @@ export const deleteTables = () => {
 };
 
 export const logSavedRecipes = () => {
-  const db = SQLite.openDatabase("recipes.db");
 
   db.transaction((tx) => {
     tx.executeSql(
@@ -218,10 +246,7 @@ export const logSavedRecipes = () => {
   });
 };
 
-// Function to log the current items in the Ingredients table
 export const logIngredients = () => {
-  const db = SQLite.openDatabase("recipes.db");
-
   db.transaction((tx) =>
     tx.executeSql(
       "SELECT * FROM Ingredients",

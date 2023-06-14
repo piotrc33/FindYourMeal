@@ -7,6 +7,7 @@ export type RootStackParamList = {
   Recommended: undefined;
   FavoriteList: undefined;
   SearchResult: { resultsRecipes: Recipe[] };
+  Note: undefined;
 };
 
 export type Diet =

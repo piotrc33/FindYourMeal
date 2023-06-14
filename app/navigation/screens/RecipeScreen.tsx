@@ -7,19 +7,23 @@ import { ScrollView } from "react-native-gesture-handler";
 import IconWithText from "../../components/shared/IconWithText";
 import { ExtendedIngredient, Ingredient, Recipe, Root } from "../../interfaces/recipeResponse.i";
 import { removeHtmlTags } from "../../utils/utilities";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { apiKey, baseUrl } from "../../../constants/constants";
 import { deleteTables, logIngredients, logSavedRecipes, saveRecipe } from "../../utils/database";
+import { FavoriteContext } from "../../utils/FavoriteContext";
+import {accentColor} from "../../../constants/Colors";
 
 export default function RecipeScreen(props: any) {
+  const { setFavoriteRecipeId, favoriteRecipeId } = useContext(FavoriteContext);
   const heartIcon = require("../../../assets/favourite.png");
   const recipe: Recipe = props.route.params.recipe;
   const ingredients: Ingredient[] = props.route.params.ingredients;
-
   const [recipeWNutrition, setRecipeWNutrition] = useState<Recipe>();
 
   useEffect(() => {
+    setFavoriteRecipeId(recipe.id);
+
     axios
       .get<Recipe>(
         `${baseUrl}/recipes/${recipe.id}/information?includeNutrition=true&apiKey=${apiKey}`
@@ -48,7 +52,6 @@ export default function RecipeScreen(props: any) {
           <Text style={styles.titleText}>{recipe.title}</Text>
         </LinearGradient>
         <TouchableOpacity style={styles.heartIconContainer} onPress={() => saveRecipe(recipe)}>
-        {/* <TouchableOpacity style={styles.heartIconContainer} onPress={() => deleteTables()}> */}
           <Image source={heartIcon} style={styles.heartIcon} />
         </TouchableOpacity>
       </ImageBackground>
@@ -145,7 +148,7 @@ const styles = StyleSheet.create({
   heartIconContainer: {
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
+    backgroundColor: accentColor,
     borderRadius: 60,
     padding: 10,
     width: heartIconSide + 2 * 10,
